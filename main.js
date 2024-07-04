@@ -1,6 +1,9 @@
 import "./style.css";
 
 import * as THREE from "three";
+import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
+import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
+import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 
 import { init } from "./js/init";
 import { addLight } from "./js/addLight";
@@ -26,6 +29,18 @@ addBackground(scene, renderer);
 addSphere(scene);
 addCube(scene);
 // addBoard(scene);
+
+const composer = new EffectComposer(renderer);
+const renderPass = new RenderPass(scene, camera);
+composer.addPass(renderPass);
+
+const bloomPass = new UnrealBloomPass(
+	new THREE.Vector2(sizes.width, sizes.height),
+	5,
+	5,
+	0.85
+);
+composer.addPass(bloomPass);
 
 const animate = () => {
 	requestAnimationFrame(animate);
@@ -131,7 +146,7 @@ const animate = () => {
 	camera.position.x += (mouseX - camera.position.x) * 0.5;
 	camera.position.y += (mouseY - camera.position.y) * 0.5;
 	camera.lookAt(scene.position);
-
+	composer.render();
 	controls.update();
 	renderer.render(scene, camera);
 };
@@ -143,6 +158,7 @@ window.addEventListener("resize", (e) => {
 	sizes.height = window.innerHeight;
 	camera.aspect = sizes.width / sizes.height;
 	camera.updateProjectionMatrix();
+	composer.setSize(sizes.width, sizes.height);
 	renderer.setSize(sizes.width, sizes.height);
 	renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 	renderer.render(scene, camera);
