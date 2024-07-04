@@ -5,7 +5,6 @@ export const createFireflies = (scene, bookPosition) => {
 	const particles = new THREE.BufferGeometry();
 	const positions = [];
 	const colors = [];
-	const whiteColors = [];
 	const velocities = [];
 	let particlesData = [];
 	let particleSystem;
@@ -21,11 +20,10 @@ export const createFireflies = (scene, bookPosition) => {
 			z = bookPosition.z + (Math.random() - 0.5) * 2 * radius;
 			if (i === 0) {
 				colors.push(0.6, 0, 1);
-				whiteColors.push(1, 1, 1);
+
 				specialParticlePosition.push(x, y, z);
 			} else {
 				colors.push(1, 1, 1);
-				whiteColors.push(1, 1, 1);
 			}
 		} while (
 			Math.sqrt(
@@ -58,11 +56,9 @@ export const createFireflies = (scene, bookPosition) => {
 		new THREE.Float32BufferAttribute(positions, 3)
 	);
 
-	const combinedColors = [...colors, ...whiteColors, ...whiteColors];
-
 	particles.setAttribute(
 		"color",
-		new THREE.Float32BufferAttribute(combinedColors, 3)
+		new THREE.Float32BufferAttribute(colors, 3)
 	);
 
 	const textureLoader = new THREE.TextureLoader();
